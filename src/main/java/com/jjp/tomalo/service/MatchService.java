@@ -36,14 +36,19 @@ public class MatchService {
     public void createMatches() {
 
         // 여기 참여하기로 한 사람만 뽑기.
-//        List<Profile> candidates= profileRepository.findAllByOptInIsTrue();
-//        if (candidates.size() < 2) {
-//            log.info("매칭 후보자가 2명 미만이므로 매칭을 종료합니다.");
-//            return;
-//        }
-//
-//        Set<Long> matchedUserIds = new HashSet<>();
-//        List<DailyMatch> newMatches = new ArrayList<>();
+        List<Profile> candidates = profileRepository.findAllByOptStatus(true);
+
+
+        // 아래 필터링이 아니라. 남자 여자 1명 이상 있을 때만.
+        if (candidates.size() < 2) {
+            log.info("매칭 후보자가 2명 미만이므로 매칭을 종료합니다.");
+            return;
+        }
+
+        Set<Long> matchedUserIds = new HashSet<>();
+        List<DailyMatch> newMatches = new ArrayList<>();
+
+
 
     }
 }
