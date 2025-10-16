@@ -54,11 +54,13 @@ public class Profile {
     private List<ProfileFavorite> profileFavorites = new ArrayList<>();
 
 
-    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "compatibility_profile_id")
     private CompatibilityProfile compatibilityProfile;
 
     //for vip
-    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "ideal_type_filter_id")
     private IdealTypeFilter idealTypeFilter; // VIP용 이상형 필터 정보
 
     @Enumerated(EnumType.STRING)
@@ -103,11 +105,9 @@ public class Profile {
 
     public void setCompatibilityProfile(CompatibilityProfile compatibilityProfile) {
         this.compatibilityProfile = compatibilityProfile;
-        compatibilityProfile.setProfile(this); // 양방향 관계 설정
     }
     public void setIdealTypeFilter(IdealTypeFilter idealTypeFilter) {
         this.idealTypeFilter = idealTypeFilter;
-        idealTypeFilter.setProfile(this); // 양방향 관계 설정
     }
 
     public void setOptIn(){

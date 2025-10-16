@@ -15,12 +15,8 @@ import lombok.*;
 public class IdealTypeFilter {
 
     @Id
-    private Long id; // Profile ID와 동일한 값 사용
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private AnimalFace idealAnimalFace; // 원하는 상대방의 동물상
@@ -32,7 +28,4 @@ public class IdealTypeFilter {
 
     private Integer maxHeight; // 원하는 상대방의 최대 키
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
 }
