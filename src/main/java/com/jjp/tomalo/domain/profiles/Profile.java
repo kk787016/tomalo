@@ -73,7 +73,7 @@ public class Profile {
     @Builder
     public Profile(String nickname, Gender gender, LocalDate birthday, String place,
                    String selfIntroduction, String job, String education, String mbti,
-                   Integer height, IncomeRange income, User user) {
+                   Integer height, IncomeRange income, User user, Boolean opt) {
         this.nickname = nickname;
         this.gender = gender;
         this.birthday = birthday;
@@ -85,7 +85,7 @@ public class Profile {
         this.height = height;
         this.income = income;
         this.user = user;
-        this.opt = false;
+        this.opt = opt;
     }
 
 

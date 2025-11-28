@@ -76,6 +76,7 @@ public class TestUserInitializer implements CommandLineRunner {
                     .height(150 + random.nextInt(41)) // 150 ~ 190
                     .income(IncomeRange.values()[random.nextInt(IncomeRange.values().length)])
                     .user(newUser)
+                    .opt(true)
                     .build();
 
             // 3. ProfileImage 추가 (1~3개)

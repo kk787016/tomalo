@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProfileFavorite {
+public class ProfileFavorite {  // 중간 엔티티. 다대다 사용하지 않으려고
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

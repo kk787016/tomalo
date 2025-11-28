@@ -12,11 +12,15 @@ public class IdealTypeDto {
 
     private AnimalFace idealAnimalFace;
 
-    private IncomeRange minIncome;
+    private Integer minAge;
 
-    @Min(value = 140, message = "최소 키는 140cm 이상이어야 합니다.")
-    private Integer minHeight;
+    private Integer maxAge;
 
-    @Max(value = 220, message = "최대 키는 220cm 이하이어야 합니다.")
-    private Integer maxHeight;
+    private Integer maxDistance;
+
+    private Boolean preferSmoker;
+
+    private String religionPreference;
+
+    private String drinkingPreference;
 }

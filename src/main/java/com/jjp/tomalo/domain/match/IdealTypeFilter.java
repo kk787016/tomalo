@@ -21,11 +21,16 @@ public class IdealTypeFilter {
     @Enumerated(EnumType.STRING)
     private AnimalFace idealAnimalFace; // 원하는 상대방의 동물상
 
-    @Enumerated(EnumType.STRING)
-    private IncomeRange minIncome; // 원하는 상대방의 최소 연봉 구간
+    private Integer minAge;
 
-    private Integer minHeight; // 원하는 상대방의 최소 키
+    private Integer maxAge;
 
-    private Integer maxHeight; // 원하는 상대방의 최대 키
+    private Integer maxDistance; // 최대 거리
+
+    private Boolean preferSmoker; // 상대방의 선호 여부
+
+    private String religionPreference; // 종교
+
+    private String drinkingPreference; // 음주
 
 }

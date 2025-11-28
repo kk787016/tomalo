@@ -1,7 +1,5 @@
 package com.jjp.tomalo.domain.match;
 
-
-import com.jjp.tomalo.domain.profiles.Profile;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -53,9 +53,12 @@ public class ProfileServiceImpl {
         if (idealTypeDto != null) {
              idealTypeFilter = IdealTypeFilter.builder()
                     .idealAnimalFace(idealTypeDto.getIdealAnimalFace())
-                    .minIncome(idealTypeDto.getMinIncome())
-                    .minHeight(idealTypeDto.getMinHeight())
-                    .maxHeight(idealTypeDto.getMaxHeight())
+                     .minAge(idealTypeDto.getMinAge())
+                     .maxAge(idealTypeDto.getMaxAge())
+                     .maxDistance(idealTypeDto.getMaxDistance())
+                     .preferSmoker(idealTypeDto.getPreferSmoker())
+                     .religionPreference(idealTypeDto.getReligionPreference())
+                     .drinkingPreference(idealTypeDto.getDrinkingPreference())
                     .build();
         }
 
@@ -72,6 +75,7 @@ public class ProfileServiceImpl {
                 .height(requestDto.getHeight())
                 .income(requestDto.getIncome())
                 .user(user)
+                .opt(true)
                 .build();
 
 //        log.info(requestDto.getImageUrls().toString());
