@@ -15,24 +15,22 @@ import lombok.*;
 public class IdealTypeFilter {
 
     @Id
-    private Long id; // Profile ID와 동일한 값 사용
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private AnimalFace idealAnimalFace; // 원하는 상대방의 동물상
 
-    @Enumerated(EnumType.STRING)
-    private IncomeRange minIncome; // 원하는 상대방의 최소 연봉 구간
+    private Integer minAge;
 
-    private Integer minHeight; // 원하는 상대방의 최소 키
+    private Integer maxAge;
 
-    private Integer maxHeight; // 원하는 상대방의 최대 키
+    private Integer maxDistance; // 최대 거리
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
+    private Boolean preferSmoker; // 상대방의 선호 여부
+
+    private String religionPreference; // 종교
+
+    private String drinkingPreference; // 음주
+
 }

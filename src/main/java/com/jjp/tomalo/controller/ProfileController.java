@@ -26,16 +26,13 @@ public class ProfileController {
 
     @PostMapping("/create")
     public ResponseEntity<Void> create(@RequestBody @Valid ProfileCreateRequestDto requestDto,
-
                                        @AuthenticationPrincipal UserPrincipal userPrincipal){
-
         User user = userPrincipal.getUser();
         profileService.createProfile(user, requestDto);
-
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("me")
+    @GetMapping("/me")
     public ResponseEntity<MyProfileResponse> getMe(@AuthenticationPrincipal UserPrincipal userPrincipal){
         User user = userPrincipal.getUser();
         MyProfileResponse myProfileResponse = profileService.getMyProfile(user);

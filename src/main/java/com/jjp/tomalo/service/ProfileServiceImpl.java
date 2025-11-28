@@ -40,6 +40,29 @@ public class ProfileServiceImpl {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
 
+        CompatibilityDto compatibilityDto = requestDto.getCompatibility();
+        CompatibilityProfile compatibilityProfile = CompatibilityProfile.builder()
+                .lifePriority(compatibilityDto.getLifePriority())
+                .weekendStyle(compatibilityDto.getWeekendStyle())
+                .conflictStyle(compatibilityDto.getConflictStyle())
+                .loveLanguage(compatibilityDto.getLoveLanguage())
+                .build();
+
+        IdealTypeFilter idealTypeFilter = null;
+        IdealTypeDto idealTypeDto = requestDto.getIdealType();
+        if (idealTypeDto != null) {
+             idealTypeFilter = IdealTypeFilter.builder()
+                    .idealAnimalFace(idealTypeDto.getIdealAnimalFace())
+                     .minAge(idealTypeDto.getMinAge())
+                     .maxAge(idealTypeDto.getMaxAge())
+                     .maxDistance(idealTypeDto.getMaxDistance())
+                     .preferSmoker(idealTypeDto.getPreferSmoker())
+                     .religionPreference(idealTypeDto.getReligionPreference())
+                     .drinkingPreference(idealTypeDto.getDrinkingPreference())
+                    .build();
+        }
+
+
         Profile newProfile = Profile.builder()
                 .nickname(requestDto.getNickname())
                 .gender(requestDto.getGender())
@@ -52,33 +75,21 @@ public class ProfileServiceImpl {
                 .height(requestDto.getHeight())
                 .income(requestDto.getIncome())
                 .user(user)
+                .opt(true)
+                .isSmoker(requestDto.getIsSmoker())
+                .religion(requestDto.getReligion())
+                .drinking(requestDto.getDrinking())
                 .build();
 
+//        log.info(requestDto.getImageUrls().toString());
+//        log.info(requestDto.getProfileFavorites().toString());
 
-        log.info(requestDto.getImageUrls().toString());
-        log.info(requestDto.getProfileFavorites().toString());
 
-
-        CompatibilityDto compatibilityDto = requestDto.getCompatibility();
-        CompatibilityProfile compatibilityProfile = CompatibilityProfile.builder()
-                .lifePriority(compatibilityDto.getLifePriority())
-                .weekendStyle(compatibilityDto.getWeekendStyle())
-                .conflictStyle(compatibilityDto.getConflictStyle())
-                .loveLanguage(compatibilityDto.getLoveLanguage())
-                .build();
         newProfile.setCompatibilityProfile(compatibilityProfile);
-
-
-        IdealTypeDto idealTypeDto = requestDto.getIdealType();
-        if (idealTypeDto != null) {
-            IdealTypeFilter idealTypeFilter = IdealTypeFilter.builder()
-                    .idealAnimalFace(idealTypeDto.getIdealAnimalFace())
-                    .minIncome(idealTypeDto.getMinIncome())
-                    .minHeight(idealTypeDto.getMinHeight())
-                    .maxHeight(idealTypeDto.getMaxHeight())
-                    .build();
+        if (idealTypeFilter != null) {
             newProfile.setIdealTypeFilter(idealTypeFilter);
         }
+
 
         if (requestDto.getImageUrls() != null) {
             for(int i = 0; i < requestDto.getImageUrls().size(); i++) {
@@ -111,7 +122,7 @@ public class ProfileServiceImpl {
 
     @Transactional
     public MyProfileResponse getMyProfile(User user) {
-        Profile profile = profileRepository.findByUserId(user.getId())
+        Profile profile = profileRepository.findProfileWithImagesByUserId(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 유저의 프로필을 찾을 수 없습니다."));
 
 
@@ -137,8 +148,5 @@ public class ProfileServiceImpl {
         }
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
-
-
-
 
 }

@@ -31,7 +31,6 @@ public class DailyMatch {
     @Column(nullable = false)
     private double compatibilityScore;
 
-    @CreatedDate // 엔티티 생성 시 날짜 자동 저장
     @Column(nullable = false)
     private LocalDate matchDate;
 
@@ -39,10 +38,11 @@ public class DailyMatch {
     private MatchStatus matchStatus;
 
     @Builder
-    public DailyMatch(Profile profileA, Profile profileB, double compatibilityScore) {
+    public DailyMatch(Profile profileA, Profile profileB, double compatibilityScore,LocalDate matchDate) {
         this.profileA = profileA;
         this.profileB = profileB;
         this.compatibilityScore = compatibilityScore;
+        this.matchDate = (matchDate != null) ? matchDate : LocalDate.now();
         this.matchStatus = MatchStatus.PENDING;
     }
 }

@@ -35,6 +35,7 @@ dependencies {
 
     // AWS S3 연동을 위한 의존성 // 취약점 발견 하여 업데이트 된 버전으로.
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.1'
+    implementation 'software.amazon.awssdk:apache-client:2.21.46'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
