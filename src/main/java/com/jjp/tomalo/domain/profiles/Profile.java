@@ -45,6 +45,7 @@ public class Profile {
     private boolean opt;
 
     private boolean isSmoker; // 나의 흡연 여부
+
     private String religion;  // 나의 종교
     private String drinking;
 

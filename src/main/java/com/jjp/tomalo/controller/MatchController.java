@@ -1,6 +1,7 @@
 package com.jjp.tomalo.controller;
 
 import com.jjp.tomalo.domain.User;
+import com.jjp.tomalo.dto.match.MatchPartnerResponseDto;
 import com.jjp.tomalo.repository.ProfileRepository;
 import com.jjp.tomalo.service.MatchService;
 import com.jjp.tomalo.service.UserPrincipal;
@@ -40,6 +41,17 @@ public class MatchController {
     }
     // 내 매치 상태 확인 하는 api.
     // 매치가 여러 사람이랑 가능해도 되니까?
+
+    @GetMapping("/daily")
+    public ResponseEntity<MatchPartnerResponseDto> getDailyMatch(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        User user = userPrincipal.getUser();
+        MatchPartnerResponseDto response = matchService.getDailyMatch(user);
+
+        if (response == null) {
+            return ResponseEntity.noContent().build(); // 204 No Content (매칭 없음)
+        }
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("test")
     public ResponseEntity<Void> test (){

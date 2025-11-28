@@ -4,6 +4,7 @@ import com.jjp.tomalo.domain.User;
 import com.jjp.tomalo.domain.match.DailyMatch;
 import com.jjp.tomalo.domain.profiles.Gender;
 import com.jjp.tomalo.domain.profiles.Profile;
+import com.jjp.tomalo.dto.match.MatchPartnerResponseDto;
 import com.jjp.tomalo.repository.DailyMatchRepository;
 import com.jjp.tomalo.repository.ProfileRepository;
 import jakarta.transaction.Transactional;
@@ -33,6 +34,23 @@ public class MatchService {
     @Transactional
     public void optOutProfile(User user){
         profileRepository.findByUserId(user.getId()).ifPresent(Profile::setOptOut);
+    }
+
+    @Transactional
+    public MatchPartnerResponseDto getDailyMatch(User user){
+
+        DailyMatch match = dailyMatchRepository.findTodayMatchByUserId(user.getId(), LocalDate.now())
+                .orElse(null);
+
+        if (match == null) {
+            return null; // 매칭 없음
+        }
+        Profile myProfile = user.getProfile(); // 혹은 repository로 조회
+        Profile partnerProfile = match.getProfileA().getId().equals(myProfile.getId())
+                ? match.getProfileB()
+                : match.getProfileA();
+
+        return MatchPartnerResponseDto.from(partnerProfile, match.getCompatibilityScore());
     }
 
 
