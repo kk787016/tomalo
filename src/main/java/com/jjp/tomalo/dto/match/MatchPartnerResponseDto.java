@@ -12,6 +12,7 @@ import java.time.Period;
 @Builder
 public class MatchPartnerResponseDto {
 
+    private Long chatRoomId;
     private Long profileId;
     private String nickname;
     private int age;
@@ -28,7 +29,7 @@ public class MatchPartnerResponseDto {
     private double compatibilityScore;
     private String mainImageUrl;
 
-    public static MatchPartnerResponseDto from(Profile profile, double score) {
+    public static MatchPartnerResponseDto from(Profile profile, double score, Long chatRoomId) {
         // 나이 계산
         int age = (profile.getBirthday() != null)
                 ? Period.between(profile.getBirthday(), LocalDate.now()).getYears()
@@ -38,6 +39,7 @@ public class MatchPartnerResponseDto {
         String imageUrl = profile.getImages().isEmpty() ? "" : profile.getImages().get(0).getImageUrl();
 
         return MatchPartnerResponseDto.builder()
+                .chatRoomId(chatRoomId)
                 .profileId(profile.getId())
                 .nickname(profile.getNickname())
                 .age(age)
