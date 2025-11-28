@@ -41,4 +41,10 @@ public class MatchController {
     // 내 매치 상태 확인 하는 api.
     // 매치가 여러 사람이랑 가능해도 되니까?
 
+    @PostMapping("test")
+    public ResponseEntity<Void> test (){
+        matchService.createMatches();
+        return ResponseEntity.ok().build();
+    }
+
 }

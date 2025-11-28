@@ -5,6 +5,7 @@ import com.jjp.tomalo.domain.match.CompatibilityProfile;
 import com.jjp.tomalo.domain.match.IdealTypeFilter;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -43,7 +44,12 @@ public class Profile {
 
     private boolean opt;
 
+    private boolean isSmoker; // 나의 흡연 여부
+    private String religion;  // 나의 종교
+    private String drinking;
+
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 1000)
     private List<ProfileImage> images = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -70,10 +76,11 @@ public class Profile {
     private AnimalFace animalFace; // AI가 분석한 나의 동물상
 
 
+
     @Builder
     public Profile(String nickname, Gender gender, LocalDate birthday, String place,
                    String selfIntroduction, String job, String education, String mbti,
-                   Integer height, IncomeRange income, User user, Boolean opt) {
+                   Integer height, IncomeRange income, User user, Boolean opt , Boolean isSmoker, String religion, String drinking) {
         this.nickname = nickname;
         this.gender = gender;
         this.birthday = birthday;
@@ -86,6 +93,9 @@ public class Profile {
         this.income = income;
         this.user = user;
         this.opt = opt;
+        this.isSmoker = isSmoker;
+        this.religion = religion;
+        this.drinking = drinking;
     }
 
 

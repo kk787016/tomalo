@@ -53,6 +53,11 @@ public class ProfileCreateRequestDto {
 
     private List<String> imageUrls;
 
+    private Boolean isSmoker;
+
+    private String religion;
+
+    private String drinking;
 
     @NotNull(message = "궁합 정보는 필수 입력 항목입니다.")
     @Valid // 중첩된 DTO의 유효성 검사를 활성화

@@ -76,6 +76,9 @@ public class ProfileServiceImpl {
                 .income(requestDto.getIncome())
                 .user(user)
                 .opt(true)
+                .isSmoker(requestDto.getIsSmoker())
+                .religion(requestDto.getReligion())
+                .drinking(requestDto.getDrinking())
                 .build();
 
 //        log.info(requestDto.getImageUrls().toString());

@@ -13,8 +13,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     // userId로 프로필을 찾는 메소드
     Optional<Profile> findByUserId(Long userId);
 
-    @Query("SELECT p FROM Profile p WHERE p.opt = :status")
-    List<Profile> findAllByOptStatus(@Param("status") boolean status);
 
     @Query("SELECT p FROM Profile p " +
             "LEFT JOIN FETCH p.images " + // images 컬렉션을 함께 가져오도록 명시
@@ -22,4 +20,10 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findProfileWithImagesByUserId(@Param("userId") Long userId);
 
     boolean existsByUserId(Long userId);
+
+    @Query("SELECT DISTINCT p FROM Profile p " +
+            "LEFT JOIN FETCH p.compatibilityProfile " + // 가치관 정보 함께 로딩
+            "LEFT JOIN FETCH p.idealTypeFilter " +      // 이상형 필터 함께 로딩
+            "WHERE p.opt = :status")
+    List<Profile> findAllByOptStatus(@Param("status") boolean status);
 }
