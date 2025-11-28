@@ -65,42 +65,50 @@ public class MatchService {
         // 최대 커플 수 맞추고.
         int diff = Math.abs(men.size() - women.size());
 
-        // 더미 데이터 채워서 짝수 맞추고.
-        if (diff > 0) {
-            if (men.size() > women.size()) {
-                for (int i = 0; i < diff; i++) {
-                    women.add(null);
-                }
-            } else {
-                for (int i = 0; i < diff; i++) {
-                    men.add(null);
-                }
+        // 남자가 여자에게 매긴 점수표 (정렬용)
+        // Map<ManID, Map<WomanID, Score>>
+        Map<Long, Map<Long, Double>> menToWomenScoreMap = new HashMap<>();
+
+        // 여자가 남자에게 매긴 점수표 (비교용 - 리뷰어가 말한 womenScores)
+        // Map<WomanID, Map<ManID, Score>>
+        Map<Long, Map<Long, Double>> womenScores = new HashMap<>();
+
+        for (Profile man : men) {
+            for (Profile woman : women) {
+                // 1. 남자가 여자를 보는 점수 계산
+                double scoreForMan = scoreService.calculateScore(man, woman);
+                menToWomenScoreMap
+                        .computeIfAbsent(man.getId(), k -> new HashMap<>())
+                        .put(woman.getId(), scoreForMan);
+
+                // 2. 여자가 남자를 보는 점수 계산
+                double scoreForWoman = scoreService.calculateScore(woman, man);
+                womenScores
+                        .computeIfAbsent(woman.getId(), k -> new HashMap<>())
+                        .put(man.getId(), scoreForWoman);
             }
         }
 
-        // 양쪽 점수 세팅
-        Map<Long, Queue<Long>> menPrefs = new HashMap<>(); // 남자가 점수줄 여자 맵
-        Map<Long, Map<Long, Double>> womenScores = new HashMap<>(); // 여자가 갖고 있는 남자 맵
+        Map<Long, Queue<Long>> menPrefs = new HashMap<>();
 
-        for (Profile man : men){
+        for (Profile man : men) {
+            // 남자가 매긴 점수표 가져오기 (이미 계산됨)
+            Map<Long, Double> hisScores = menToWomenScoreMap.get(man.getId());
+
             List<Profile> rankedWomen = new ArrayList<>(women);
+
+            // ✨ 정렬 시에는 Map에서 단순 조회만 수행 (아주 빠름)
             rankedWomen.sort((w1, w2) -> Double.compare(
-                    scoreService.calculateScore(man, w2), // 내림차순
-                    scoreService.calculateScore(man, w1)
+                    hisScores.get(w2.getId()), // 점수 높은 게 위로 (내림차순)
+                    hisScores.get(w1.getId())
             ));
+
             Queue<Long> prefQueue = new LinkedList<>();
-            for (Profile w : rankedWomen) prefQueue.add(w.getId());
+            for (Profile w : rankedWomen) {
+                prefQueue.add(w.getId());
+            }
             menPrefs.put(man.getId(), prefQueue);
         }
-
-        for (Profile woman : women) {
-            Map<Long, Double> scores = new HashMap<>();
-            for (Profile man : men) {
-                scores.put(man.getId(), scoreService.calculateScore(woman, man));
-            }
-            womenScores.put(woman.getId(), scores);
-        }
-
 
         // 게일- 섀플리 알고리즘
         Map<Long, Long> womenEngagements = new HashMap<>();

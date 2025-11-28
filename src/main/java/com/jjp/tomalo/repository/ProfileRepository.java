@@ -22,8 +22,10 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     boolean existsByUserId(Long userId);
 
     @Query("SELECT DISTINCT p FROM Profile p " +
-            "LEFT JOIN FETCH p.compatibilityProfile " + // 가치관 정보 함께 로딩
-            "LEFT JOIN FETCH p.idealTypeFilter " +      // 이상형 필터 함께 로딩
+            "LEFT JOIN FETCH p.compatibilityProfile " + // 1:1 (기존)
+            "LEFT JOIN FETCH p.idealTypeFilter " +      // 1:1 (기존)
+            "LEFT JOIN FETCH p.profileFavorites pf " +  // ✨ 1:N (Profile -> ProfileFavorite)
+            "LEFT JOIN FETCH pf.favorite " +            // ✨ N:1 (ProfileFavorite -> Favorite) **중요**
             "WHERE p.opt = :status")
     List<Profile> findAllByOptStatus(@Param("status") boolean status);
 }

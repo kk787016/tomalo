@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 public class MatchingScoreService {
     private final MbtiService mbtiService;
 
+    private static final String NO_PREFERENCE = "상관없음";
+
     public double calculateScore(Profile me, Profile target) {
         double totalScore = 0;
         // 1. 핵심 가치관 (40점)
@@ -45,39 +47,37 @@ public class MatchingScoreService {
         return score;
     }
     private double calculateLifestyleScore(IdealTypeFilter myFilter, Profile target) {
+        if (myFilter == null) return 15; // 기본 점수 (Null 처리)
 
         double score = 0;
 
-        // 1) 흡연 (10점)
-        // preferSmoker: true(흡연자 선호), false(비흡연자 선호), null(상관없음)
+        // 1) 흡연 (Boolean 타입이라 null 체크로 충분)
         Boolean preferSmoker = myFilter.getPreferSmoker();
         if (preferSmoker == null) {
-            score += 10; // 상관없음
+            score += 10;
         } else {
-            // 내 선호(true/false)와 상대방의 실제 흡연여부(isSmoker)가 같으면 점수
-            // 예: 비흡연 선호(false) == 비흡연자(false) -> 일치
             if (preferSmoker.equals(target.isSmoker())) {
                 score += 10;
             }
         }
 
-        // 2) 종교 (10점)
+        // 2) 종교 (String)
         String religionPref = myFilter.getReligionPreference();
-        if (religionPref == null || "상관없음".equals(religionPref)) {
+        // ✨ [수정] 문자열 리터럴 대신 상수를 사용
+        if (religionPref == null || NO_PREFERENCE.equals(religionPref)) {
             score += 10;
         } else {
-            // 내 선호 종교와 상대방의 실제 종교가 일치하면 점수
             if (religionPref.equals(target.getReligion())) {
                 score += 10;
             }
         }
 
-        // 3) 음주 (10점)
+        // 3) 음주 (String)
         String drinkingPref = myFilter.getDrinkingPreference();
-        if (drinkingPref == null || "상관없음".equals(drinkingPref)) {
+        // ✨ [수정] 여기도 상수를 사용
+        if (drinkingPref == null || NO_PREFERENCE.equals(drinkingPref)) {
             score += 10;
         } else {
-            // 내 선호 음주 스타일과 상대방의 실제 음주 스타일이 일치하면 점수
             if (drinkingPref.equals(target.getDrinking())) {
                 score += 10;
             }
@@ -85,6 +85,7 @@ public class MatchingScoreService {
 
         return score;
     }
+    
 
     private double getMbtiScore(String m1, String m2) {
         return mbtiService.getMbtiScore(m1, m2);
