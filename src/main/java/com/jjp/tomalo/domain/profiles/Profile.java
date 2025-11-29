@@ -50,6 +50,7 @@ public class Profile {
     private String drinking;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 100)
     private List<ProfileImage> images = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)

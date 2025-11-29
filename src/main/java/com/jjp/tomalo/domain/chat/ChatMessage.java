@@ -1,5 +1,6 @@
 package com.jjp.tomalo.domain.chat;
 
+import com.jjp.tomalo.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,7 +25,9 @@ public class ChatMessage {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
-    private Long senderId; // 보낸 사람 ID (User FK)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     @Column(columnDefinition = "TEXT")
     private String content; // 메시지 내용
@@ -40,9 +43,9 @@ public class ChatMessage {
     }
 
     @Builder
-    public ChatMessage(ChatRoom chatRoom, Long senderId, String content, MessageType type) {
+    public ChatMessage(ChatRoom chatRoom, User sender, String content, MessageType type) {
         this.chatRoom = chatRoom;
-        this.senderId = senderId;
+        this.sender = sender;
         this.content = content;
         this.type = type;
     }

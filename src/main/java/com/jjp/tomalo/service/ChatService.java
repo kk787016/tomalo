@@ -10,6 +10,7 @@ import com.jjp.tomalo.dto.chat.ChatMessageResponseDto;
 import com.jjp.tomalo.dto.chat.ChatRoomListDto;
 import com.jjp.tomalo.repository.ChatMessageRepository;
 import com.jjp.tomalo.repository.ChatRoomRepository;
+import com.jjp.tomalo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final UserRepository userRepository;
 
 
     @Transactional
@@ -36,22 +38,22 @@ public class ChatService {
 
     @Transactional
     public ChatMessage saveMessage(ChatMessageDto messageDto) {
-        // 채팅방 조회
         ChatRoom chatRoom = chatRoomRepository.findById(messageDto.getRoomId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다.")); // todo 예외처리
 
-        // 메시지 엔티티 생성 및 저장
+        User sender = userRepository.findById(messageDto.getSenderId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
         ChatMessage chatMessage = ChatMessage.builder()
                 .chatRoom(chatRoom)
-                .senderId(messageDto.getSenderId())
+                .sender(sender)
                 .content(messageDto.getContent())
                 .type(ChatMessage.MessageType.TALK)
                 .build();
 
         ChatMessage savedMessage = chatMessageRepository.save(chatMessage);
 
-        // 채팅방에 마지막 메시지 내용 업데이트 (목록 조회 성능용)
-        chatRoom.updateLastMessage(messageDto.getContent(), LocalDateTime.now());
+        chatRoom.updateLastMessage(messageDto.getContent(), savedMessage.getSentAt());
 
         return savedMessage;
     }
@@ -67,13 +69,9 @@ public class ChatService {
     public List<ChatRoomListDto> getMyChatRooms(User user) {
         Long userId = user.getId();
 
-        // 1. 내가 포함된 모든 DailyMatch를 찾고 -> 연결된 ChatRoom을 가져옴
-        // (ChatRoomRepository에 관련 쿼리 메서드가 필요함. 아래 참고)
         List<ChatRoom> chatRooms = chatRoomRepository.findMyChatRooms(userId);
 
         return chatRooms.stream().map(room -> {
-            // 2. 상대방 찾기
-            Profile myProfile = user.getProfile(); // Fetch Join 등으로 가져왔다고 가정
             Profile partner = room.getDailyMatch().getProfileA().getUser().getId().equals(userId)
                     ? room.getDailyMatch().getProfileB()
                     : room.getDailyMatch().getProfileA();

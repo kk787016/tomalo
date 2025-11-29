@@ -19,7 +19,7 @@ public class ChatMessageResponseDto {
         return ChatMessageResponseDto.builder()
                 .id(message.getId())
                 .roomId(message.getChatRoom().getId())
-                .senderId(message.getSenderId())
+                .senderId(message.getSender().getId())
                 .content(message.getContent())
                 .sentAt(message.getSentAt())
                 .build();
