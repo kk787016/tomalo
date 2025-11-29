@@ -1,10 +1,12 @@
 package com.jjp.tomalo.service;
 
 import com.jjp.tomalo.domain.User;
+import com.jjp.tomalo.domain.chat.ChatRoom;
 import com.jjp.tomalo.domain.match.DailyMatch;
 import com.jjp.tomalo.domain.profiles.Gender;
 import com.jjp.tomalo.domain.profiles.Profile;
 import com.jjp.tomalo.dto.match.MatchPartnerResponseDto;
+import com.jjp.tomalo.repository.ChatRoomRepository;
 import com.jjp.tomalo.repository.DailyMatchRepository;
 import com.jjp.tomalo.repository.ProfileRepository;
 import jakarta.transaction.Transactional;
@@ -24,7 +26,9 @@ public class MatchService {
 
     private final ProfileRepository profileRepository;
     private final MatchingScoreService scoreService;
+    private final ChatService chatService;
     private final DailyMatchRepository dailyMatchRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     @Transactional
     public void optInProfile(User user){
@@ -50,7 +54,10 @@ public class MatchService {
                 ? match.getProfileB()
                 : match.getProfileA();
 
-        return MatchPartnerResponseDto.from(partnerProfile, match.getCompatibilityScore());
+        ChatRoom chatRoom = chatRoomRepository.findByDailyMatchId(match.getId())
+                .orElseThrow(() -> new IllegalStateException("채팅방이 생성되지 않았습니다."));
+
+        return MatchPartnerResponseDto.from(partnerProfile, match.getCompatibilityScore(),chatRoom.getId());
     }
 
 
@@ -194,7 +201,12 @@ public class MatchService {
             log.info("매칭 성사: {} & {}", man.getNickname(), woman.getNickname());
         }
 
-        dailyMatchRepository.saveAll(matchesToSave);
+        List<DailyMatch> savedMatches = dailyMatchRepository.saveAll(matchesToSave);
+        for (DailyMatch savedMatch : savedMatches) {
+            chatService.createChatRoom(savedMatch);
+            log.info("채팅방 생성 완료: 매칭 ID {}", savedMatch.getId());
+        }
+
 
     }
 }
